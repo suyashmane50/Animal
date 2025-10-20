@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - Sindhudurg Pet Care</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/doctor.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-paw"></i>
+                <span>Sindhudurg Pet Care</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-paw"></i>
+                        <span>My Patients</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-file-medical"></i>
+                        <span>Health Records</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-syringe"></i>
+                        <span>Vaccinations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h1 class="page-title">Doctor Dashboard</h1>
+            <div class="user-info">
+                <div class="user-details">
+                    <p class="user-name">Dr. Rajesh Patil</p>
+                    <p class="user-role">Veterinary Doctor • Malvan</p>
+                </div>
+                <div class="user-avatar">RP</div>
+                <button class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="dashboard-cards">
+            <div class="stat-card">
+                <div class="stat-icon patients-icon">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>45</h3>
+                    <p>Assigned Patients</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon appointments-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>5</h3>
+                    <p>Today's Appointments</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon reports-icon">
+                    <i class="fas fa-file-medical-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>12</h3>
+                    <p>Pending Reports</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon village-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Malvan</h3>
+                    <p>Assigned Village</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Today's Appointments -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Today's Appointments</h2>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-calendar-plus"></i> Schedule New
+                        </button>
+                    </div>
+                    
+                    <ul class="appointment-list">
+                        <li class="appointment-item">
+                            <div class="appointment-time">9:00 AM</div>
+                            <div class="appointment-details">
+                                <h5 class="appointment-pet">Max (Labrador)</h5>
+                                <p class="appointment-owner">Rajesh Kumar</p>
+                                <span class="appointment-type type-checkup">Routine Checkup</span>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-action btn-start">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                                <button class="btn btn-action btn-reschedule">
+                                    <i class="fas fa-clock"></i> Reschedule
+                                </button>
+                            </div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">10:30 AM</div>
+                            <div class="appointment-details">
+                                <h5 class="appointment-pet">Mittens (Persian Cat)</h5>
+                                <p class="appointment-owner">Priya Patil</p>
+                                <span class="appointment-type type-vaccination">Vaccination</span>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-action btn-start">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                                <button class="btn btn-action btn-reschedule">
+                                    <i class="fas fa-clock"></i> Reschedule
+                                </button>
+                            </div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">11:45 AM</div>
+                            <div class="appointment-details">
+                                <h5 class="appointment-pet">Buddy (Indian Pariah)</h5>
+                                <p class="appointment-owner">Anil Desai</p>
+                                <span class="appointment-type type-checkup">Follow-up</span>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-action btn-start">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                                <button class="btn btn-action btn-reschedule">
+                                    <i class="fas fa-clock"></i> Reschedule
+                                </button>
+                            </div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">2:00 PM</div>
+                            <div class="appointment-details">
+                                <h5 class="appointment-pet">Rex (German Shepherd)</h5>
+                                <p class="appointment-owner">Sunil Naik</p>
+                                <span class="appointment-type type-emergency">Emergency</span>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-action btn-start">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                                <button class="btn btn-action btn-reschedule">
+                                    <i class="fas fa-clock"></i> Reschedule
+                                </button>
+                            </div>
+                        </li>
+                        <li class="appointment-item">
+                            <div class="appointment-time">3:30 PM</div>
+                            <div class="appointment-details">
+                                <h5 class="appointment-pet">Snowy (Local Breed)</h5>
+                                <p class="appointment-owner">Meera Joshi</p>
+                                <span class="appointment-type type-checkup">Skin Allergy</span>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-action btn-start">
+                                    <i class="fas fa-play"></i> Start
+                                </button>
+                                <button class="btn btn-action btn-reschedule">
+                                    <i class="fas fa-clock"></i> Reschedule
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Patient List -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">My Patients</h2>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search Patients
+                        </button>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Pet</th>
+                                    <th>Owner</th>
+                                    <th>Last Visit</th>
+                                    <th>Next Checkup</th>
+                                    <th>Health Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="pet-avatar" alt="Max">
+                                            <span class="pet-name">Max</span>
+                                        </div>
+                                    </td>
+                                    <td>Rajesh Kumar</td>
+                                    <td>15 Sep 2023</td>
+                                    <td>15 Nov 2023</td>
+                                    <td>
+                                        <span class="status-badge status-healthy">Healthy</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-action btn-start">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-reschedule">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="pet-avatar" alt="Mittens">
+                                            <span class="pet-name">Mittens</span>
+                                        </div>
+                                    </td>
+                                    <td>Priya Patil</td>
+                                    <td>20 Sep 2023</td>
+                                    <td>20 Oct 2023</td>
+                                    <td>
+                                        <span class="status-badge status-due">Vaccination Due</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-action btn-start">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-reschedule">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="pet-avatar" alt="Buddy">
+                                            <span class="pet-name">Buddy</span>
+                                        </div>
+                                    </td>
+                                    <td>Anil Desai</td>
+                                    <td>25 Sep 2023</td>
+                                    <td>25 Nov 2023</td>
+                                    <td>
+                                        <span class="status-badge status-healthy">Recovered</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-action btn-start">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-reschedule">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://images.unsplash.com/photo-1517423447168-cb804aafa6e0?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="pet-avatar" alt="Rex">
+                                            <span class="pet-name">Rex</span>
+                                        </div>
+                                    </td>
+                                    <td>Sunil Naik</td>
+                                    <td>10 Oct 2023</td>
+                                    <td>10 Jan 2024</td>
+                                    <td>
+                                        <span class="status-badge status-critical">Needs Follow-up</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-action btn-start">
+                                            <i class="fas fa-file-medical"></i>
+                                        </button>
+                                        <button class="btn btn-action btn-reschedule">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Recent Health Reports -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Health Reports</h2>
+                    </div>
+                    
+                    <ul class="report-list">
+                        <li class="report-item">
+                            <div class="report-date">
+                                <div class="report-day">15</div>
+                                <div class="report-month">Oct</div>
+                            </div>
+                            <div class="report-details">
+                                <h5 class="report-pet">Max - Labrador</h5>
+                                <p class="report-diagnosis">Annual Health Checkup</p>
+                            </div>
+                            <div class="report-status status-completed">Completed</div>
+                        </li>
+                        <li class="report-item">
+                            <div class="report-date">
+                                <div class="report-day">12</div>
+                                <div class="report-month">Oct</div>
+                            </div>
+                            <div class="report-details">
+                                <h5 class="report-pet">Rex - German Shepherd</h5>
+                                <p class="report-diagnosis">Skin Infection Treatment</p>
+                            </div>
+                            <div class="report-status status-completed">Completed</div>
+                        </li>
+                        <li class="report-item">
+                            <div class="report-date">
+                                <div class="report-day">10</div>
+                                <div class="report-month">Oct</div>
+                            </div>
+                            <div class="report-details">
+                                <h5 class="report-pet">Mittens - Persian Cat</h5>
+                                <p class="report-diagnosis">Vaccination Follow-up</p>
+                            </div>
+                            <div class="report-status status-pending">Pending</div>
+                        </li>
+                        <li class="report-item">
+                            <div class="report-date">
+                                <div class="report-day">08</div>
+                                <div class="report-month">Oct</div>
+                            </div>
+                            <div class="report-details">
+                                <h5 class="report-pet">Snowy - Local Breed</h5>
+                                <p class="report-diagnosis">Deworming Treatment</p>
+                            </div>
+                            <div class="report-status status-completed">Completed</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Village Statistics -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Malvan Village Stats</h2>
+                    </div>
+                    
+                    <div class="village-stats">
+                        <div class="village-stat">
+                            <h4>45</h4>
+                            <p>Total Pets</p>
+                        </div>
+                        <div class="village-stat">
+                            <h4>38</h4>
+                            <p>Vaccinated</p>
+                        </div>
+                        <div class="village-stat">
+                            <h4>5</h4>
+                            <p>Need Checkup</p>
+                        </div>
+                        <div class="village-stat">
+                            <h4>2</h4>
+                            <p>Critical Cases</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Quick Actions</h2>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-file-medical me-2"></i> Create Health Report
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-syringe me-2"></i> Record Vaccination
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-calendar-plus me-2"></i> Schedule Visit
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-chart-bar me-2"></i> Generate Monthly Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/doctor.js"></script>
+</body>
+</html>
