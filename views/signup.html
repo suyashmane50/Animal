@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sindhudurg Pet Care - Signup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/login.css">
+    <style>
+        /* Additional styles for OTP verification */
+        .otp-container {
+            display: none;
+        }
+        
+        .otp-input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .otp-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(44, 120, 115, 0.3);
+        }
+        
+        .timer {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin: 10px 0;
+        }
+        
+        .resend-otp {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .resend-otp a {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .resend-otp a:hover {
+            text-decoration: underline;
+        }
+        
+        .resend-otp a.disabled {
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .verification-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .btn-verify {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-verify:hover {
+            background: #5da57a;
+        }
+        
+        .btn-verify:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .mobile-verification-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .status-verified {
+            color: var(--secondary-color);
+        }
+        
+        .status-pending {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Signup Form -->
+        <div class="login-card fade-in" id="signupForm">
+            <div class="row g-0">
+                <!-- Left Side - Welcome Section -->
+                <div class="col-lg-6 login-left">
+                    <div class="logo">
+                        <i class="fas fa-paw"></i>Sindhudurg Pet Care
+                    </div>
+                    <h1 class="welcome-title">Create Account</h1>
+                    <p class="welcome-text">Join the Sindhudurg Pet Care Management System to help ensure the wellbeing of animals across our district.</p>
+                    
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Easy pet registration</li>
+                        <li><i class="fas fa-check-circle"></i> Access to veterinary services</li>
+                        <li><i class="fas fa-check-circle"></i> Health monitoring</li>
+                        <li><i class="fas fa-check-circle"></i> Regular checkup reminders</li>
+                    </ul>
+                    
+                    <div>
+                        <h4>Already have an account?</h4>
+                        <a href="/login" class="btn btn-signup">Sign In Here</a>
+                    </div>
+                </div>
+                
+                <!-- Right Side - Signup Form -->
+                <div class="col-lg-6 login-right">
+                    <div class="login-header">
+                        <h2 class="login-title">Sign Up</h2>
+                        <p class="login-subtitle">Create your account by selecting your user type</p>
+                    </div>
+                    
+                    <div class="user-type-selector">
+                        <div class="user-type-btn active" data-user-type="pet-owner">
+                            <i class="fas fa-users"></i>
+                            <span class="user-type-name">Pet Owner</span>
+                        </div>
+                       
+                    </div>
+                    
+                    <div class="form-container">
+                        <form id="signupFormElement">
+                            <div class="form-group">
+                                <label for="signupUsername" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="signupUsername" placeholder="Enter Your Full Name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+91</span>
+                                    <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter your Mobile Number" maxlength="10" required>
+                                    <button type="button" class="btn btn-verify" id="sendOtpBtn">Send OTP</button>
+                                </div>
+                                <div class="mobile-verification-status" id="mobileStatus">
+                                    <i class="fas fa-circle status-pending"></i>
+                                    <span>Mobile number not verified</span>
+                                </div>
+                            </div>
+                            
+                            <!-- OTP Verification Section -->
+                            <div class="otp-container" id="otpContainer">
+                                <div class="form-group">
+                                    <label class="form-label">Enter OTP</label>
+                                    <div class="otp-input-group">
+                                        <input type="text" class="form-control otp-input" maxlength="1" data-index="1">
+                                        <input type="text" class="form-control otp-input" maxlength="1" data-index="2">
+                                        <input type="text" class="form-control otp-input" maxlength="1" data-index="3">
+                                        <input type="text" class="form-control otp-input" maxlength="1" data-index="4">
+                                        <input type="text" class="form-control otp-input" maxlength="1" data-index="5">
+                                        <input type="text" class="form-control otp-input" maxlength="1" data-index="6">
+                                    </div>
+                                    <div class="timer" id="timer">02:00</div>
+                                    <div class="resend-otp">
+                                        <a href="#" id="resendOtp">Resend OTP</a>
+                                    </div>
+                                    <button type="button" class="btn btn-login w-100" id="verifyOtpBtn">Verify OTP</button>
+                                </div>
+                                <div class="verification-success" id="verificationSuccess">
+                                    <i class="fas fa-check-circle"></i> Mobile number verified successfully!
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="signupPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="signupPassword" placeholder="Create a password" required>
+                                <button type="button" class="password-toggle" id="signupPasswordToggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                            </div>
+                            
+                            <div class="form-group" id="talukaField">
+                                <label for="taluka" class="form-label">Taluka</label>
+                                <select class="form-control" id="taluka" required>
+                                    <option value="">Select your Taluka</option>
+                                    <option value="malvan">Malvan</option>
+                                    <option value="kankavli">Kankavli</option>
+                                    <option value="kudal">Kudal</option>
+                                    <option value="vengurla">Vengurla</option>
+                                    <option value="sawantwadi">Sawantwadi</option>
+                                    <option value="dodamarg">Dodamarg</option>
+                                    <option value="devgad">Devgad</option>
+                                    <option value="vaibhavwadi">Vaibhavwadi</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group hidden" id="villageField">
+                                <label for="villageSearch" class="form-label">Village</label>
+                                <div class="village-search-container">
+                                    <input type="text" class="form-control" id="villageSearch" placeholder="Type to search for your village..." disabled required>
+                                    <div class="village-dropdown" id="villageDropdown">
+                                        <div class="village-list" id="villageList">
+                                            <!-- Village options will be populated here dynamically -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="selectedVillage" name="village" required>
+                            </div>
+                            
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-login" id="submitBtn">Create Account</button>
+                            
+                            <div class="divider">
+                                <span>Already have an account?</span>
+                            </div>
+                            
+                            <a href="/login" class="btn btn-signup">Sign In Here</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Village data for each taluka
+    const villageData = {
+        malvan: ["Malvan Town", "Chivla", "Mithbao", "Saramsham", "Achra", "Dandi", "Khalchi Devli"],
+        kankavli: ["Kankavli Town", "Adur", "Asage", "Bav", "Dabhole", "Dhamnand", "Hindale"],
+        kudal: ["Kudal Town", "Adivare", "Amboli", "Aros", "Asnol", "Bali", "Bhuibag"],
+        vengurla: ["Vengurla Town", "Achara", "Arare", "Banda", "Bhuibag", "Dabhol", "Deulwada"],
+        sawantwadi: ["Sawantwadi Town", "Adivare", "Amboli", "Aros", "Asnol", "Banda", "Bhuibag"],
+        dodamarg: ["Dodamarg Town", "Dhamapur", "Kudal", "Mhapan", "Mochemad", "Mogane", "Nivli"],
+        devgad: ["Devgad Town", "Achra", "Anjarle", "Aravi", "Bhogave", "Dabhole", "Dapoli"],
+        vaibhavwadi: ["Vaibhavwadi Town", "Adur", "Asage", "Bav", "Dabhole", "Dhamnand", "Hindale"]
+    };
+
+    // DOM Elements
+    const signupFormElement = document.getElementById('signupFormElement');
+    const signupPasswordToggle = document.getElementById('signupPasswordToggle');
+    const userTypeBtns = document.querySelectorAll('.user-type-btn');
+    const talukaField = document.getElementById('talukaField');
+    const villageField = document.getElementById('villageField');
+    const talukaSelect = document.getElementById('taluka');
+    const villageSearch = document.getElementById('villageSearch');
+    const villageDropdown = document.getElementById('villageDropdown');
+    const villageList = document.getElementById('villageList');
+    const selectedVillage = document.getElementById('selectedVillage');
+    
+    // Mobile verification elements
+    const mobileNumber = document.getElementById('mobileNumber');
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+    const otpContainer = document.getElementById('otpContainer');
+    const otpInputs = document.querySelectorAll('.otp-input');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const timer = document.getElementById('timer');
+    const resendOtp = document.getElementById('resendOtp');
+    const verificationSuccess = document.getElementById('verificationSuccess');
+    const mobileStatus = document.getElementById('mobileStatus');
+    const submitBtn = document.getElementById('submitBtn');
+
+    let currentUserType = 'pet-owner';
+    let currentTaluka = '';
+    let allVillages = [];
+    let isMobileVerified = false;
+    let otpTimer;
+    let timeLeft = 120;
+    let generatedOtp = '';
+    let wrongAttempts = 0;
+    const MAX_WRONG_ATTEMPTS = 3;
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded - initializing signup form');
+        
+        // Form submission
+        signupFormElement.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isMobileVerified) {
+                alert('Please verify your mobile number first');
+                return;
+            }
+            signupUser();
+        });
+        
+        // Password toggle
+        signupPasswordToggle.addEventListener('click', function() {
+            togglePasswordVisibility('signupPassword', signupPasswordToggle);
+        });
+        
+        // User type selection
+        userTypeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                userTypeBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentUserType = this.getAttribute('data-user-type');
+                
+                if (userTypes[currentUserType].showVillage) {
+                    talukaField.style.display = 'block';
+                } else {
+                    talukaField.style.display = 'none';
+                    villageField.classList.add('hidden');
+                }
+            });
+        });
+
+        // Send OTP button
+        sendOtpBtn.addEventListener('click', function() {
+            const mobile = mobileNumber.value.trim();
+            if (!validateMobileNumber(mobile)) {
+                alert('Please enter a valid 10-digit mobile number');
+                return;
+            }
+            sendOtpToServer(mobile);
+        });
+
+        // OTP input handling
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                if (this.value.length === 1) {
+                    if (index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                }
+                
+                if (index === otpInputs.length - 1 && this.value.length === 1) {
+                    const allFilled = Array.from(otpInputs).every(input => input.value.length === 1);
+                    if (allFilled) {
+                        verifyOtpWithServer();
+                    }
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Verify OTP button
+        verifyOtpBtn.addEventListener('click', verifyOtpWithServer);
+
+        // Resend OTP
+        resendOtp.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (resendOtp.classList.contains('disabled')) return;
+            
+            const mobile = mobileNumber.value.trim();
+            if (validateMobileNumber(mobile)) {
+                sendOtpToServer(mobile);
+            }
+        });
+
+        // Taluka and village selection (same as before)
+        talukaSelect.addEventListener('change', function() {
+            currentTaluka = this.value;
+            if (currentTaluka) {
+                villageField.classList.remove('hidden');
+                villageSearch.disabled = false;
+                villageSearch.placeholder = `Type to search villages in ${this.options[this.selectedIndex].text}...`;
+                allVillages = villageData[currentTaluka] || [];
+                clearVillageSelection();
+            } else {
+                villageField.classList.add('hidden');
+                villageSearch.disabled = true;
+                clearVillageSelection();
+            }
+        });
+
+        // Village search functionality (same as before)
+        villageSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            if (searchTerm.length > 0) {
+                const filteredVillages = allVillages.filter(village => 
+                    village.toLowerCase().includes(searchTerm)
+                );
+                populateVillages(filteredVillages);
+                villageDropdown.classList.add('show');
+            } else {
+                populateVillages(allVillages);
+                villageDropdown.classList.add('show');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!villageField.contains(e.target)) {
+                villageDropdown.classList.remove('show');
+            }
+        });
+    });
+
+    // Backend API calls
+    async function sendOtpToServer(mobile) {
+        try {
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.textContent = 'Sending...';
+            
+            const response = await fetch('/signup/send-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mobileNumber: mobile })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                generatedOtp = data.otp; // For testing - remove in production
+                console.log('OTP sent:', generatedOtp); // Remove in production
+                
+                otpContainer.style.display = 'block';
+                sendOtpBtn.textContent = 'OTP Sent';
+                startTimer();
+                alert(`OTP sent to ${mobile}. For testing, OTP is: ${generatedOtp}`);
+                otpInputs[0].focus();
+            } else {
+                alert(data.message);
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.textContent = 'Send OTP';
+            }
+        } catch (error) {
+            console.error('Error sending OTP:', error);
+            alert('Failed to send OTP. Please try again.');
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.textContent = 'Send OTP';
+        }
+    }
+
+    async function verifyOtpWithServer() {
+        const enteredOtp = Array.from(otpInputs).map(input => input.value).join('');
+        const mobile = mobileNumber.value.trim();
+
+        if (enteredOtp.length !== 6) {
+            alert('Please enter complete 6-digit OTP');
+            highlightInvalidOtp();
+            return;
+        }
+
+        try {
+            const response = await fetch('/signup/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    mobileNumber: mobile, 
+                    otp: enteredOtp 
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // OTP verified successfully
+                isMobileVerified = true;
+                verificationSuccess.style.display = 'block';
+                otpContainer.style.display = 'none';
+                mobileStatus.innerHTML = '<i class="fas fa-check-circle status-verified"></i><span>Mobile number verified</span>';
+                submitBtn.disabled = false;
+                clearInterval(otpTimer);
+                sendOtpBtn.textContent = 'Verified ✓';
+                
+                otpInputs.forEach(input => {
+                    input.style.borderColor = '#28a745';
+                    input.style.backgroundColor = '#f8fff9';
+                });
+                
+                alert('Mobile number verified successfully!');
+            } else {
+                handleWrongOtp();
+            }
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
+            alert('Failed to verify OTP. Please try again.');
+        }
+    }
+
+    async function signupUser() {
+        const fullName = document.getElementById('signupUsername').value;
+        const mobile = mobileNumber.value;
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const taluka = document.getElementById('taluka').value;
+        const village = document.getElementById('selectedVillage').value;
+        
+        // Basic validation
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+        
+        if (userTypes[currentUserType].showVillage) {
+            if (!taluka) {
+                alert('Please select your Taluka');
+                return;
+            }
+            if (!village) {
+                alert('Please select your Village');
+                return;
+            }
+        }
+        
+        if (!document.getElementById('agreeTerms').checked) {
+            alert('Please agree to the Terms of Service and Privacy Policy');
+            return;
+        }
+
+        try {
+            const agreeToTerms = document.getElementById('agreeTerms').checked;
+
+const response = await fetch('/signup/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fullName,
+                        mobileNumber: mobile,
+                        password,
+                        confirmPassword,   // ✅ Include confirmPassword
+                        userType: currentUserType,
+                        taluka,
+                        village,
+                        agreeToTerms       // ✅ Include agreeToTerms
+                    })
+                });
+
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Account created successfully! You can now log in.');
+                window.location.href = '/login';
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error creating account:', error);
+            alert('Failed to create account. Please try again.');
+        }
+    }
+
+    // Helper functions (same as before)
+    function validateMobileNumber(mobile) {
+        const mobileRegex = /^[6-9]\d{9}$/;
+        return mobileRegex.test(mobile);
+    }
+
+    function startTimer() {
+        clearInterval(otpTimer);
+        timeLeft = 120;
+        updateTimer();
+        otpTimer = setInterval(() => {
+            timeLeft--;
+            updateTimer();
+            if (timeLeft <= 0) {
+                clearInterval(otpTimer);
+                resendOtp.classList.remove('disabled');
+                verifyOtpBtn.disabled = true;
+                verifyOtpBtn.textContent = 'OTP Expired';
+            }
+        }, 1000);
+    }
+
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 30) timer.style.color = '#dc3545';
+        else timer.style.color = '#666';
+        
+        if (timeLeft <= 0) resendOtp.classList.remove('disabled');
+        else resendOtp.classList.add('disabled');
+    }
+
+    function clearOtpInputs() {
+        otpInputs.forEach(input => {
+            input.value = '';
+            input.style.borderColor = '#e0e0e0';
+        });
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.textContent = 'Verify OTP';
+    }
+
+    function handleWrongOtp() {
+        wrongAttempts++;
+        
+        if (wrongAttempts >= MAX_WRONG_ATTEMPTS) {
+            alert(`Too many wrong attempts. Please request a new OTP.`);
+            clearInterval(otpTimer);
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.textContent = 'Send OTP';
+            otpContainer.style.display = 'none';
+            wrongAttempts = 0;
+        } else {
+            const attemptsLeft = MAX_WRONG_ATTEMPTS - wrongAttempts;
+            alert(`Invalid OTP. ${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} left. You can resend OTP immediately.`);
+            
+            highlightInvalidOtp();
+            clearOtpInputs();
+            clearInterval(otpTimer);
+            resendOtp.classList.remove('disabled');
+            timer.textContent = 'OTP Invalid - Resend Available';
+            timer.style.color = '#dc3545';
+            otpInputs[0].focus();
+        }
+    }
+
+    function highlightInvalidOtp() {
+        otpInputs.forEach(input => {
+            input.style.borderColor = '#dc3545';
+            input.style.backgroundColor = '#fff5f5';
+        });
+        setTimeout(() => {
+            otpInputs.forEach(input => {
+                input.style.borderColor = '#e0e0e0';
+                input.style.backgroundColor = '';
+            });
+        }, 1000);
+    }
+
+    // Village functions (same as before)
+    function populateVillages(villages) {
+        villageList.innerHTML = '';
+        if (villages.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'village-item no-results';
+            noResults.textContent = 'No villages found';
+            villageList.appendChild(noResults);
+        } else {
+            villages.forEach(village => {
+                const villageItem = document.createElement('div');
+                villageItem.className = 'village-item';
+                villageItem.textContent = village;
+                villageItem.addEventListener('click', function() {
+                    selectVillage(village);
+                });
+                villageList.appendChild(villageItem);
+            });
+        }
+    }
+
+    function selectVillage(village) {
+        villageSearch.value = village;
+        selectedVillage.value = village;
+        villageDropdown.classList.remove('show');
+    }
+
+    function clearVillageSelection() {
+        villageSearch.value = '';
+        selectedVillage.value = '';
+        villageDropdown.classList.remove('show');
+    }
+
+    function togglePasswordVisibility(passwordFieldId, toggleButton) {
+        const passwordField = document.getElementById(passwordFieldId);
+        const icon = toggleButton.querySelector('i');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // User type data
+    const userTypes = {
+        'pet-owner': { showVillage: true },
+        'doctor': { showVillage: true },
+        'district-head': { showVillage: false },
+        'collector': { showVillage: false }
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sindhudurg Pet Care - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Login/Signup Form -->
+        <div class="login-card fade-in" id="loginForm">
+            <div class="row g-0">
+                <!-- Left Side - Welcome Section -->
+                <div class="col-lg-6 login-left">
+                    <div class="logo">
+                        <i class="fas fa-paw"></i>Sindhudurg Pet Care
+                    </div>
+                    <h1 class="welcome-title">Welcome Back!</h1>
+                    <p class="welcome-text">Sign in to access the Sindhudurg Pet Care Management System and continue providing the best care for animals in our district.</p>
+                    
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Comprehensive pet registration</li>
+                        <li><i class="fas fa-check-circle"></i> Regular health checkups</li>
+                        <li><i class="fas fa-check-circle"></i> Village-wise doctor assignments</li>
+                        <li><i class="fas fa-check-circle"></i> Health record tracking</li>
+                    </ul>
+                    
+                    <div>
+                        <h4>User Types</h4>
+                        <div class="user-types">
+                            <div class="user-type-badge">
+                                <i class="fas fa-user-shield"></i> Collector
+                            </div>
+                            <div class="user-type-badge">
+                                <i class="fas fa-user-tie"></i> District Head
+                            </div>
+                            <div class="user-type-badge">
+                                <i class="fas fa-user-md"></i> Doctor
+                            </div>
+                            <div class="user-type-badge">
+                                <i class="fas fa-users"></i> Pet Owner
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Side - Login Form -->
+                <div class="col-lg-6 login-right">
+                    <div class="login-header">
+                        <h2 class="login-title">Sign In</h2>
+                        <p class="login-subtitle">Select your user type and enter your credentials</p>
+                    </div>
+                    
+                    <div class="user-type-selector">
+                        <div class="user-type-btn active" data-user-type="pet-owner">
+                            <i class="fas fa-users"></i>
+                            <span class="user-type-name">Pet Owner</span>
+                        </div>
+                        <div class="user-type-btn" data-user-type="doctor">
+                            <i class="fas fa-user-md"></i>
+                            <span class="user-type-name">Doctor</span>
+                        </div>
+                        <div class="user-type-btn" data-user-type="district-head">
+                            <i class="fas fa-user-tie"></i>
+                            <span class="user-type-name">District Head</span>
+                        </div>
+                        <div class="user-type-btn" data-user-type="collector">
+                            <i class="fas fa-user-shield"></i>
+                            <span class="user-type-name">Collector</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-container">
+                        <form id="loginFormElement">
+                            <div class="form-group">
+                                <label for="username" class="form-label">Mobile Number</label>
+                                <input type="text" class="form-control" id="mobileNumber" name='mobileNo'placeholder="Enter your Mobile Number" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                                <button type="button" class="password-toggle" id="passwordToggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            
+                            <button  class="btn btn-login" type="submit" onclick="loginUser(event)">Login</button>
+                            
+                            <div class="divider">
+                                <span>Don't have an account?</span>
+                            </div>
+                            
+                            <a type="button" class="btn btn-signup" id="showSignupBtn" href="/signup">Create New Account</a>
+                            
+                            <div class="form-footer">
+                                <a href="#">Forgot your password?</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // DOM Elements for Login Page
+    const loginForm = document.getElementById('loginForm');
+    const loginFormElement = document.getElementById('loginFormElement');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const userTypeBtns = document.querySelectorAll('.user-type-btn');
+    const showSignupBtn = document.getElementById('showSignupBtn');
+
+    // User type data
+    const userTypes = {
+        'pet-owner': {
+            title: 'Pet Owner Dashboard',
+            subtitle: 'Manage your pets and view their health records',
+            icon: 'fas fa-users'
+        },
+        'doctor': {
+            title: 'Veterinary Doctor Dashboard',
+            subtitle: 'Manage pet checkups and health records in your assigned village',
+            icon: 'fas fa-user-md'
+        },
+        'district-head': {
+            title: 'District Animal Head Dashboard',
+            subtitle: 'Oversee district-wide pet healthcare and doctor assignments',
+            icon: 'fas fa-user-tie'
+        },
+        'collector': {
+            title: 'District Collector Dashboard',
+            subtitle: 'Administrative oversight and reporting for the pet care system',
+            icon: 'fas fa-user-shield'
+        }
+    };
+
+    let currentUserType = 'pet-owner';
+
+    // Event Listeners - Only for elements that exist on login page
+    if (showSignupBtn) {
+        // Remove any existing click event and let the href handle navigation
+        showSignupBtn.addEventListener('click', function(e) {
+            // Let the href handle the navigation
+            console.log('Redirecting to signup page...');
+        });
+    }
+
+    if (loginFormElement) {
+        loginFormElement.addEventListener('submit', function(e) {
+            e.preventDefault();
+            loginUser();
+        });
+    }
+
+    if (passwordToggle) {
+        passwordToggle.addEventListener('click', function() {
+            togglePasswordVisibility('password', passwordToggle);
+        });
+    }
+
+    // User type selection
+    if (userTypeBtns.length > 0) {
+        userTypeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                userTypeBtns.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Update current user type
+                currentUserType = this.getAttribute('data-user-type');
+                console.log('Selected user type:', currentUserType);
+            });
+        });
+    }
+
+    // Functions
+    function togglePasswordVisibility(passwordFieldId, toggleButton) {
+        const passwordField = document.getElementById(passwordFieldId);
+        const icon = toggleButton.querySelector('i');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    async function loginUser(event) {
+    event.preventDefault();
+
+    const mobileNumber = document.getElementById("mobileNumber").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                mobileNo: mobileNumber,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+        console.log('Server response:', data);
+
+        if (response.ok && data.success) {
+
+            // ✅ Redirect based on user type
+            switch (data.userType) {
+                case 'patient':
+                    window.location.href = '/pet-owner';
+                    break;
+                case 'doctor':
+                    window.location.href = '/views/doctor_dashboard.html';
+                    break;
+                case 'admin':
+                    window.location.href = '/views/admin_dashboard.html';
+                    break;
+                case 'staff':
+                    window.location.href = '/views/staff_dashboard.html';
+                    break;
+                default:
+                    alert('Unknown user type: ' + data.userType);
+            }
+        } else {
+            alert(data.message || 'Invalid credentials');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Something went wrong. Please try again later.');
+    }
+}
+
+
+</script>
+</body>
+</html>

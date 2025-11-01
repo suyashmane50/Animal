@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Pet - Sindhudurg Pet Care</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #1cc88a;
+            --accent-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --dark-color: #2e59d9;
+            --light-color: #f8f9fc;
+            --text-dark: #5a5c69;
+            --text-light: #858796;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fc;
+            color: var(--text-dark);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--dark-color) 100%);
+            color: white;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            border-left-color: var(--secondary-color);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.15);
+            border-left-color: var(--secondary-color);
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .user-role {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #d52a1a;
+            transform: translateY(-2px);
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e3e6f0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #6c757d;
+            transform: translateY(-2px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e3e6f0;
+        }
+
+        .pet-avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .avatar-upload {
+            text-align: center;
+        }
+
+        .avatar-upload-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .avatar-upload-btn:hover {
+            background: #17a673;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            padding: 15px 20px;
+        }
+
+        .alert-success {
+            background: #d1f7e4;
+            color: #0f5132;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar .logo span,
+            .sidebar .nav-link span {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-paw"></i>
+                <span>Sindhudurg Pet Care</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="pet_owner.html">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-paw"></i>
+                        <span>My Pets</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-file-medical"></i>
+                        <span>Health Records</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-syringe"></i>
+                        <span>Vaccinations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-user-md"></i>
+                        <span>Veterinarians</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h1 class="page-title">Add New Pet</h1>
+            <div class="user-info">
+                <div class="user-details">
+                    <p class="user-name">Rajesh Patil</p>
+                    <p class="user-role">Pet Owner • Malvan</p>
+                </div>
+                <div class="user-avatar">RP</div>
+                <button class="btn btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Add Pet Form -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Pet Information</h2>
+            </div>
+            
+            <div class="form-container">
+                <form id="addPetForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="avatar-upload">
+                                <img id="petAvatarPreview" src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" 
+                                     class="pet-avatar-preview" alt="Pet Avatar">
+                                <input type="file" id="petAvatar" accept="image/*" style="display: none;">
+                                <button type="button" class="avatar-upload-btn" onclick="document.getElementById('petAvatar').click()">
+                                    <i class="fas fa-camera me-2"></i>Upload Photo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="petName" class="form-label required-field">Pet Name</label>
+                                        <input type="text" class="form-control" id="petName" name="petName" required 
+                                               placeholder="Enter pet name">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="petType" class="form-label required-field">Pet Type</label>
+                                        <select class="form-select" id="petType" name="petType" required>
+                                            <option value="">Select pet type</option>
+                                            <option value="dog">Dog</option>
+                                            <option value="cat">Cat</option>
+                                            <option value="bird">Bird</option>
+                                            <option value="rabbit">Rabbit</option>
+                                            <option value="fish">Fish</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="breed" class="form-label">Breed</label>
+                                        <input type="text" class="form-control" id="breed" name="breed" 
+                                               placeholder="Enter breed">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="gender" class="form-label required-field">Gender</label>
+                                        <select class="form-select" id="gender" name="gender" required>
+                                            <option value="">Select gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="age" class="form-label">Age</label>
+                                        <input type="text" class="form-control" id="age" name="age" 
+                                               placeholder="e.g., 2 years 3 months">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="color" class="form-label">Color/Markings</label>
+                                <input type="text" class="form-control" id="color" name="color" 
+                                       placeholder="Enter color and markings">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="weight" class="form-label">Weight</label>
+                                <input type="text" class="form-control" id="weight" name="weight" 
+                                       placeholder="e.g., 15 kg">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='/pet-owner'">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Add Pet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Image preview functionality
+        document.getElementById('petAvatar').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('petAvatarPreview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission
+        document.getElementById('addPetForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/api/pets/add', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'  // ✅ ensures cookie/session is sent with request
+                    });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Pet added successfully!');
+                    window.location.href = '/pet-owner';
+                } else {
+                    alert('Error adding pet: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding the pet.');
+            }
+        });
+
+        // Calculate age from date of birth
+        document.getElementById('dateOfBirth').addEventListener('change', function() {
+            const dob = new Date(this.value);
+            const today = new Date();
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            
+            let ageText = '';
+            if (years > 0) {
+                ageText += years + ' year' + (years > 1 ? 's' : '');
+            }
+            if (months > 0) {
+                if (ageText) ageText += ' ';
+                ageText += months + ' month' + (months > 1 ? 's' : '');
+            }
+            
+            if (ageText) {
+                document.getElementById('age').value = ageText;
+            }
+        });
+
+        // Navigation functions
+        function goBack() {
+            window.location.href = '/pet-owner';
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+     {
+        try {
+            const response = await fetch('/logout', {
+                method: 'POST',           // use POST not GET
+                credentials: 'include'    // include cookies/session
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = '/login'; // redirect to login page
+            } else {
+                alert('Logout failed: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+            alert('An error occurred while logging out.');
+        }
+    }
+});
+
+
+        // Add active class to clicked nav items
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

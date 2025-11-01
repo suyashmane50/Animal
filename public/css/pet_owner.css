@@ -1,0 +1,769 @@
+:root {
+            --primary-color: #2c7873;
+            --secondary-color: #6fb98f;
+            --accent-color: #ff9a3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-color);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .user-details {
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .user-role {
+            font-size: 0.8rem;
+            color: #777;
+            margin: 0;
+        }
+        
+        .btn-logout {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-logout:hover {
+            background: #e88a2a;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .pets-icon {
+            background: rgba(44, 120, 115, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .checkup-icon {
+            background: rgba(255, 154, 60, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .vaccine-icon {
+            background: rgba(111, 185, 143, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .doctor-icon {
+            background: rgba(52, 58, 64, 0.1);
+            color: var(--dark-color);
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark-color);
+        }
+        
+        .stat-info p {
+            margin: 0;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #235e5a;
+        }
+        
+        /* Pets Table */
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table {
+            margin: 0;
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: 600;
+            border: none;
+            padding: 12px 15px;
+        }
+        
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-color: #f1f1f1;
+        }
+        
+        .pet-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .pet-name {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .pet-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .pet-dog {
+            background: rgba(44, 120, 115, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .pet-cat {
+            background: rgba(255, 154, 60, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-healthy {
+            background: rgba(111, 185, 143, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .status-due {
+            background: rgba(255, 154, 60, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .status-pending {
+            background: rgba(52, 58, 64, 0.1);
+            color: var(--dark-color);
+        }
+        
+        .btn-action {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
+        .btn-view {
+            background: rgba(44, 120, 115, 0.1);
+            color: var(--primary-color);
+            border: none;
+        }
+        
+        .btn-edit {
+            background: rgba(255, 154, 60, 0.1);
+            color: var(--accent-color);
+            border: none;
+        }
+        
+        /* Upcoming Checkups */
+        .checkup-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checkup-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f1f1f1;
+            transition: all 0.3s;
+        }
+        
+        .checkup-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .checkup-item:last-child {
+            border-bottom: none;
+        }
+        
+        .checkup-date {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .checkup-day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .checkup-month {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        .checkup-details {
+            flex: 1;
+        }
+        
+        .checkup-pet {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .checkup-doctor {
+            color: #777;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .checkup-time {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* Vaccination Status */
+        .vaccine-progress {
+            margin-bottom: 20px;
+        }
+        
+        .vaccine-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .vaccine-name {
+            font-weight: 500;
+        }
+        
+        .vaccine-status {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .progress {
+            height: 8px;
+            margin-bottom: 15px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                text-align: center;
+            }
+            
+            .logo span, .nav-link span {
+                display: none;
+            }
+            
+            .nav-link i {
+                margin-right: 0;
+                font-size: 1.3rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-top: 10px;
+            }
+        }
+        /* Modal Styles */
+.vaccination-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 250px; /* Account for sidebar */
+    top: 0;
+    width: calc(100% - 250px);
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 0;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+    color: white;
+    padding: 20px 30px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.close-modal:hover {
+    opacity: 0.8;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+/* Pet Info Section */
+.pet-info-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.pet-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+}
+
+.pet-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    align-content: start;
+}
+
+.detail-item {
+    margin-bottom: 10px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.detail-value {
+    color: var(--text-light);
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Vaccination Timeline */
+.vaccination-timeline {
+    margin-top: 20px;
+}
+
+.timeline-title {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.timeline-item.completed {
+    border-left-color: var(--secondary-color);
+}
+
+.timeline-item.pending {
+    border-left-color: var(--warning-color);
+    background: #fffbf0;
+}
+
+.timeline-item.overdue {
+    border-left-color: var(--danger-color);
+    background: #fef0f0;
+}
+
+.vaccine-date {
+    min-width: 100px;
+    text-align: center;
+    padding-right: 15px;
+    border-right: 2px solid #dee2e6;
+}
+
+.vaccine-day {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.vaccine-month {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+
+.vaccine-year {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.vaccine-details {
+    flex: 1;
+    padding-left: 15px;
+}
+
+.vaccine-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.vaccine-description {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.vaccine-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.vaccine-batch {
+    background: #e9ecef;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+}
+
+.vaccine-status {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-completed {
+    background: #d1f7e4;
+    color: #0f5132;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-overdue {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.no-vaccinations {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-light);
+}
+
+.no-vaccinations i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: #dee2e6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vaccination-modal {
+        left: 70px;
+        width: calc(100% - 70px);
+    }
+    
+    .modal-content {
+        margin: 5% auto;
+        width: 95%;
+    }
+    
+    .pet-info-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .pet-avatar-large {
+        margin: 0 auto;
+    }
+    
+    .timeline-item {
+        flex-direction: column;
+    }
+    
+    .vaccine-date {
+        border-right: none;
+        border-bottom: 2px solid #dee2e6;
+        padding-right: 0;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+}
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-pdf {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.close-modal {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+}
