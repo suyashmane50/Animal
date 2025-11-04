@@ -5,6 +5,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import compression from 'compression';;
+
 
 import petOwnerRoute from './routes/petOwnerRoute.js';
 import loginrouter from './routes/loginRoute.js';
@@ -14,12 +16,16 @@ import { __dirname } from './utils/path.js';
 import { initializeDatabase } from './models/signup.js';
 import petRoute from './routes/petsRoute.js';
 import { initializePetTable } from "./models/pets.js";
+import talukaRouter from "./routes/talukaRouter.js"
+import {initializeRegionTables} from  "./models/talukas.js"
+
 
 const app = express();
 const server = http.createServer(app);
 
 initializeDatabase();
 initializePetTable();
+initializeRegionTables();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
+app.use(compression());
 
 app.use(session({
     secret: process.env.SESSION_SECRET || 'secretkey',
@@ -47,6 +54,7 @@ app.use('/signup', signuprouter);
 app.use('/pet-owner', petOwnerRoute);
 app.use('/logout', logoutRoute);
 app.use('/api/pets', petRoute);
+app.use('/talukaroute',talukaRouter)
 
 
 server.listen(process.env.PORT || 3000, () => {

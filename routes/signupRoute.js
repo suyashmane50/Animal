@@ -95,71 +95,85 @@ signuprouter.post('/resend-otp', async (req, res) => {
 
 // Create user
 signuprouter.post('/create', async (req, res) => {
-    try {
-        
-        console.log("📩 Received signup data:", req.body);
+  try {
+    console.log("📩 Received signup data:", req.body);
 
-        const {userType, fullName, mobileNumber, password, confirmPassword, taluka, village, agreeToTerms } = req.body;
-        if (!fullName || !mobileNumber || !password || !confirmPassword || !userType || !taluka || !village || agreeToTerms !== true) {
-            return res.status(400).json({ success: false, message: 'All fields are required' });
-        }
+    const { userType, fullName, mobileNumber, password, confirmPassword, taluka, village, agreeToTerms } = req.body;
 
-        // Debug log to ensure values are coming in
-        console.log({ fullName, mobileNumber, password, confirmPassword, taluka, village, agreeToTerms });
-
-        if (!fullName || !mobileNumber || !password || !confirmPassword || !taluka) {
-            return res.status(400).json({ success: false, message: 'All fields are required' });
-        }
-
-        if (password !== confirmPassword) {
-            return res.status(400).json({ success: false, message: 'Passwords do not match' });
-        }
-
-        if (!agreeToTerms) {
-            return res.status(400).json({ success: false, message: 'Please agree to Terms of Service' });
-        }
-
-        // Verify mobile
-        const [verifiedMobile] = await db.query(
-            'SELECT * FROM otp_verification WHERE mobile_number = ? AND is_used = 1',
-            [mobileNumber]
-        );
-        if (verifiedMobile.length === 0) {
-            return res.status(400).json({ success: false, message: 'Mobile number not verified' });
-        }
-
-        // Check if user already exists
-        const [existingUser] = await db.query('SELECT * FROM users WHERE mobile_number = ?', [mobileNumber]);
-        if (existingUser.length > 0) {
-            return res.status(409).json({ success: false, message: 'User already exists' });
-        }
-
-        // Encrypt password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Insert user
-        const [result] = await db.query(
-            `INSERT INTO users (full_name, mobile_number, password, user_type, taluka, village, created_at)
-             VALUES (?, ?, ?, 'patient', ?, ?, NOW())`,
-            [fullName, mobileNumber, hashedPassword, taluka, village || null]
-        );
-
-        // Cleanup OTP table
-        await db.query('DELETE FROM otp_verification WHERE mobile_number = ?', [mobileNumber]);
-
-        console.log("✅ User created successfully:", result.insertId);
-
-        return res.status(201).json({
-            success: true,
-            message: 'Account created successfully',
-            userId: result.insertId,
-        });
-
-    } catch (err) {
-        console.error('❌ Error creating user:', err);
-        return res.status(500).json({ success: false, message: 'Failed to create account' });
+    if (!fullName || !mobileNumber || !password || !confirmPassword || !userType || !taluka || !village || agreeToTerms !== true) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
     }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+    }
+
+    // ✅ Verify mobile
+    const [verifiedMobile] = await db.query(
+      'SELECT * FROM otp_verification WHERE mobile_number = ? AND is_used = 1',
+      [mobileNumber]
+    );
+    if (verifiedMobile.length === 0) {
+      return res.status(400).json({ success: false, message: 'Mobile number not verified' });
+    }
+
+    // ✅ Check if user already exists
+    const [existingUser] = await db.query('SELECT * FROM users WHERE mobile_number = ?', [mobileNumber]);
+    if (existingUser.length > 0) {
+      return res.status(409).json({ success: false, message: 'User already exists' });
+    }
+
+    // ✅ Encrypt password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ✅ Get taluka ID (like KU) from taluka name
+    const [talukaResult] = await db.query('SELECT id FROM talukas WHERE name = ?', [taluka]);
+    if (talukaResult.length === 0) {
+      return res.status(400).json({ success: false, message: 'Invalid taluka' });
+    }
+    const talukaId = talukaResult[0].id; // e.g., "KU"
+
+    // ✅ Get village ID number (like 12)
+    const [villageResult] = await db.query('SELECT id FROM villages WHERE name = ?', [village]);
+    if (villageResult.length === 0) {
+      return res.status(400).json({ success: false, message: 'Invalid village' });
+    }
+    const villageId = villageResult[0].id; // e.g., 12
+
+    // ✅ Find next user number in this village
+    const [lastUser] = await db.query(
+      'SELECT COUNT(*) AS count FROM users WHERE village = ?',
+      [village]
+    );
+    const nextUserNumber = lastUser[0].count + 1; // e.g., 62
+
+    // ✅ Generate user code like KU-12-62
+    const userCode = `${talukaId}-${villageId}-${nextUserNumber}`;
+
+    // ✅ Insert user
+    const [result] = await db.query(
+      `INSERT INTO users (full_name, mobile_number, password, user_type, taluka, village, user_code, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+      [fullName, mobileNumber, hashedPassword, userType, taluka, village, userCode]
+    );
+
+    // ✅ Cleanup OTP
+    await db.query('DELETE FROM otp_verification WHERE mobile_number = ?', [mobileNumber]);
+
+    console.log("✅ User created:", result.insertId, "Code:", userCode);
+
+    return res.status(201).json({
+      success: true,
+      message: 'Account created successfully',
+      userCode,
+    });
+
+  } catch (err) {
+    console.error('❌ Error creating user:', err);
+    return res.status(500).json({ success: false, message: 'Failed to create account' });
+  }
 });
+
 
 
 // Check mobile availability
