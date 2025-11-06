@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import compression from 'compression';;
+import dotenv from "dotenv";
 
 
 import petOwnerRoute from './routes/petOwnerRoute.js';
@@ -19,7 +20,7 @@ import { initializePetTable } from "./models/pets.js";
 import talukaRouter from "./routes/talukaRouter.js"
 import {initializeRegionTables} from  "./models/talukas.js"
 
-
+dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
@@ -57,6 +58,8 @@ app.use('/api/pets', petRoute);
 app.use('/talukaroute',talukaRouter)
 
 
-server.listen(process.env.PORT || 3000, () => {
-    console.log(`Server running at ${PORT}`);
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
