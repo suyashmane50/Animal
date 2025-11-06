@@ -50,13 +50,24 @@ const createSignupSchema = async () => {
 // 🆕 Ensure taluka code column and populate codes
 const ensureTalukaCodeColumn = async () => {
   try {
-    // 1️⃣ Add column only if not exists
-    await db.query(`
-      ALTER TABLE talukas 
-      ADD COLUMN IF NOT EXISTS code VARCHAR(5)
+    // 1️⃣ Check if 'code' column exists
+    const [rows] = await db.query(`
+      SHOW COLUMNS FROM talukas LIKE 'code';
     `);
 
-    // 2️⃣ Populate code for known talukas (safe even if already filled)
+    // 2️⃣ Add column only if it doesn't exist
+    if (rows.length === 0) {
+      console.log("🆕 Adding 'code' column to talukas table...");
+      await db.query(`
+        ALTER TABLE talukas 
+        ADD COLUMN code VARCHAR(5);
+      `);
+      console.log("✅ 'code' column added successfully!");
+    } else {
+      console.log("✅ 'code' column already exists in talukas table");
+    }
+
+    // 3️⃣ Populate the column values
     await db.query(`
       UPDATE talukas 
       SET code = CASE 
@@ -70,7 +81,7 @@ const ensureTalukaCodeColumn = async () => {
         WHEN name LIKE 'Vaibhavwadi%' THEN 'VA'
         ELSE LEFT(UPPER(name), 2)
       END
-      WHERE code IS NULL OR code = ''
+      WHERE code IS NULL OR code = '';
     `);
 
     console.log('✅ Taluka code column ensured and populated');
@@ -78,6 +89,7 @@ const ensureTalukaCodeColumn = async () => {
     console.error('❌ Error ensuring taluka codes:', error);
   }
 };
+
 
 // Initialize everything
 export const initializeDatabase = async () => {

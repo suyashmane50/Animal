@@ -207,39 +207,26 @@
                                 <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
                             </div>
                             <div class="form-group" id="districtField">
-                            <label for="district" class="form-label">District</label>
-                            <select class="form-control" id="district" required>
-                                <option value="">Select District</option>
-                            </select>
-                            </div>
+  <label for="district" class="form-label">District</label>
+  <select class="form-control" id="district" name="district" required>
+    <option value="">Select District</option>
+  </select>
+</div>
 
-                            <div class="form-group" id="talukaField">
-                                <label for="taluka" class="form-label">Taluka</label>
-                                <select class="form-control" id="taluka" required>
-                                    <option value="">Select your Taluka</option>
-                                    <option value="malvan">Malvan</option>
-                                    <option value="kankavli">Kankavli</option>
-                                    <option value="kudal">Kudal</option>
-                                    <option value="vengurla">Vengurla</option>
-                                    <option value="sawantwadi">Sawantwadi</option>
-                                    <option value="dodamarg">Dodamarg</option>
-                                    <option value="devgad">Devgad</option>
-                                    <option value="vaibhavwadi">Vaibhavwadi</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group hidden" id="villageField">
-                                <label for="villageSearch" class="form-label">Village</label>
-                                <div class="village-search-container">
-                                    <input type="text" class="form-control" id="villageSearch" placeholder="Type to search for your village..." disabled required>
-                                    <div class="village-dropdown" id="villageDropdown">
-                                        <div class="village-list" id="villageList">
-                                            <!-- Village options will be populated here dynamically -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" id="selectedVillage" name="village" required>
-                            </div>
+<div class="form-group" id="talukaField">
+  <label for="taluka" class="form-label">Taluka</label>
+  <select class="form-control" id="taluka" name="taluka" required>
+    <option value="">Select Taluka</option>
+  </select>
+</div>
+
+<div class="form-group" id="villageField">
+  <label for="village" class="form-label">Village</label>
+  <select class="form-control" id="village" name="village" required>
+    <option value="">Select Village</option>
+  </select>
+</div>
+
                             
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="agreeTerms" required>
@@ -262,272 +249,83 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // 🆕 District data with short codes and taluka mapping
-    const districtData = {
-        sindhudurg: {
-            code: "SI",
-            talukas: {
-                dodamarg: ["Dodamarg Town", "Dhamapur", "Kudal", "Mhapan", "Mochemad", "Mogane", "Nivli"],
-                sawantwadi: ["Sawantwadi Town", "Adivare", "Amboli", "Aros", "Asnol", "Banda", "Bhuibag"],
-                vengurla: ["Vengurla Town", "Achara", "Arare", "Banda", "Bhuibag", "Dabhol", "Deulwada"],
-                kudal: ["Kudal Town", "Adivare", "Amboli", "Aros", "Asnol", "Bali", "Bhuibag"],
-                malvan: ["Malvan Town", "Chivla", "Mithbao", "Saramsham", "Achra", "Dandi", "Khalchi Devli"],
-                kankavli: ["Kankavli Town", "Adur", "Asage", "Bav", "Dabhole", "Dhamnand", "Hindale"],
-                devgad: ["Devgad Town", "Achra", "Anjarle", "Aravi", "Bhogave", "Dabhole", "Dapoli"],
-                vaibhavwadi: ["Vaibhavwadi Town", "Adur", "Asage", "Bav", "Dabhole", "Dhamnand", "Hindale"]
-            }
-        }
-    };
+document.addEventListener("DOMContentLoaded", async () => {
 
-    // DOM Elements
-    const signupFormElement = document.getElementById('signupFormElement');
-    const signupPasswordToggle = document.getElementById('signupPasswordToggle');
-    const userTypeBtns = document.querySelectorAll('.user-type-btn');
+  const districtSelect = document.getElementById("district");
+  const talukaSelect = document.getElementById("taluka");
+  const villageSelect = document.getElementById("village");
 
-    const districtField = document.getElementById('districtField'); // 🆕
-    const districtSelect = document.getElementById('district'); // 🆕
-    const talukaField = document.getElementById('talukaField');
-    const talukaSelect = document.getElementById('taluka');
-    const villageField = document.getElementById('villageField');
-    const villageSearch = document.getElementById('villageSearch');
-    const villageDropdown = document.getElementById('villageDropdown');
-    const villageList = document.getElementById('villageList');
-    const selectedVillage = document.getElementById('selectedVillage');
+  // 🔹 Utility: Create option element
+  const createOption = (value, text) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = text;
+    return option;
+  };
 
-    // Mobile verification elements
-    const mobileNumber = document.getElementById('mobileNumber');
-    const sendOtpBtn = document.getElementById('sendOtpBtn');
-    const otpContainer = document.getElementById('otpContainer');
-    const otpInputs = document.querySelectorAll('.otp-input');
-    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-    const timer = document.getElementById('timer');
-    const resendOtp = document.getElementById('resendOtp');
-    const verificationSuccess = document.getElementById('verificationSuccess');
-    const mobileStatus = document.getElementById('mobileStatus');
-    const submitBtn = document.getElementById('submitBtn');
-
-    let currentUserType = 'pet-owner';
-    let currentDistrict = ''; // 🆕
-    let currentTaluka = '';
-    let allVillages = [];
-    let isMobileVerified = false;
-    let otpTimer;
-    let timeLeft = 120;
-    let generatedOtp = '';
-    let wrongAttempts = 0;
-    const MAX_WRONG_ATTEMPTS = 3;
-
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded - initializing signup form');
-
-        // 🆕 Populate Districts Dropdown
-        populateDistricts();
-
-        // Form submission
-        signupFormElement.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!isMobileVerified) {
-                alert('Please verify your mobile number first');
-                return;
-            }
-            signupUser();
-        });
-
-        // Password toggle
-        signupPasswordToggle.addEventListener('click', function() {
-            togglePasswordVisibility('signupPassword', signupPasswordToggle);
-        });
-
-        // User type selection
-        userTypeBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                userTypeBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                currentUserType = this.getAttribute('data-user-type');
-
-                if (userTypes[currentUserType].showVillage) {
-                    districtField.style.display = 'block'; // 🆕
-                    talukaField.style.display = 'block';
-                } else {
-                    districtField.style.display = 'none'; // 🆕
-                    talukaField.style.display = 'none';
-                    villageField.classList.add('hidden');
-                }
-            });
-        });
-
-        // 🆕 District selection logic
-        districtSelect.addEventListener('change', function() {
-            currentDistrict = this.value;
-            talukaSelect.innerHTML = '<option value="">Select Taluka</option>';
-            villageField.classList.add('hidden');
-
-            if (currentDistrict) {
-                const talukas = Object.keys(districtData[currentDistrict].talukas);
-                talukas.forEach(t => {
-                    const option = document.createElement('option');
-                    option.value = t;
-                    option.textContent = capitalizeFirst(t);
-                    talukaSelect.appendChild(option);
-                });
-                talukaField.classList.remove('hidden');
-            }
-        });
-
-        // Taluka and village logic
-        talukaSelect.addEventListener('change', function() {
-            currentTaluka = this.value;
-            if (currentDistrict && currentTaluka) {
-                allVillages = districtData[currentDistrict].talukas[currentTaluka] || [];
-                villageField.classList.remove('hidden');
-                villageSearch.disabled = false;
-                villageSearch.placeholder = `Type to search villages in ${capitalizeFirst(currentTaluka)}...`;
-                clearVillageSelection();
-            } else {
-                villageField.classList.add('hidden');
-                villageSearch.disabled = true;
-                clearVillageSelection();
-            }
-        });
-
-        // Village search (same)
-        villageSearch.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredVillages = allVillages.filter(v => v.toLowerCase().includes(searchTerm));
-            populateVillages(filteredVillages);
-            villageDropdown.classList.add('show');
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!villageField.contains(e.target)) villageDropdown.classList.remove('show');
-        });
-
-        // OTP logic (unchanged)
-        sendOtpBtn.addEventListener('click', function() {
-            const mobile = mobileNumber.value.trim();
-            if (!validateMobileNumber(mobile)) {
-                alert('Please enter a valid 10-digit mobile number');
-                return;
-            }
-            sendOtpToServer(mobile);
-        });
-
-        verifyOtpBtn.addEventListener('click', verifyOtpWithServer);
-        resendOtp.addEventListener('click', e => {
-            e.preventDefault();
-            if (!resendOtp.classList.contains('disabled')) {
-                const mobile = mobileNumber.value.trim();
-                if (validateMobileNumber(mobile)) sendOtpToServer(mobile);
-            }
-        });
-    });
-
-    // 🆕 Populate districts
-    function populateDistricts() {
-        districtSelect.innerHTML = '<option value="">Select District</option>';
-        Object.keys(districtData).forEach(d => {
-            const option = document.createElement('option');
-            option.value = d;
-            option.textContent = capitalizeFirst(d);
-            districtSelect.appendChild(option);
-        });
+  // 🆕 Load districts from backend
+  async function loadDistricts() {
+    try {
+      const res = await fetch("/signup/districts");
+      const data = await res.json();
+      if (data.success) {
+        districtSelect.innerHTML = "<option value=''>Select District</option>";
+        data.districts.forEach(d =>
+          districtSelect.appendChild(createOption(d.id, d.name))
+        );
+      }
+    } catch (err) {
+      console.error("Error loading districts:", err);
     }
+  }
 
-    // 🆕 Capitalize function
-    function capitalizeFirst(text) {
-        return text.charAt(0).toUpperCase() + text.slice(1);
+  // 🆕 Load talukas when district changes
+  districtSelect.addEventListener("change", async () => {
+    const districtId = districtSelect.value;
+    talukaSelect.innerHTML = "<option value=''>Loading...</option>";
+    villageSelect.innerHTML = "<option value=''>Select Village</option>";
+
+    if (!districtId) return;
+
+    try {
+      const res = await fetch(`/signup/talukas/${districtId}`);
+      const data = await res.json();
+      if (data.success) {
+        talukaSelect.innerHTML = "<option value=''>Select Taluka</option>";
+        data.talukas.forEach(t =>
+          talukaSelect.appendChild(createOption(t.id, t.name))
+        );
+      }
+    } catch (err) {
+      console.error("Error loading talukas:", err);
     }
+  });
 
-    // Signup function updated to include district
-    async function signupUser() {
-        const fullName = document.getElementById('signupUsername').value;
-        const mobile = mobileNumber.value;
-        const password = document.getElementById('signupPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const district = currentDistrict; // 🆕
-        const taluka = document.getElementById('taluka').value;
-        const village = document.getElementById('selectedVillage').value;
+  // 🆕 Load villages when taluka changes
+  talukaSelect.addEventListener("change", async () => {
+    const talukaId = talukaSelect.value;
+    villageSelect.innerHTML = "<option value=''>Loading...</option>";
 
-        if (password !== confirmPassword) return alert('Passwords do not match');
-        if (!district) return alert('Please select your District');
-        if (!taluka) return alert('Please select your Taluka');
-        if (!village) return alert('Please select your Village');
-        if (!document.getElementById('agreeTerms').checked)
-            return alert('Please agree to the Terms of Service and Privacy Policy');
+    if (!talukaId) return;
 
-        try {
-            const agreeToTerms = document.getElementById('agreeTerms').checked;
-
-            const response = await fetch('/signup/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    fullName,
-                    mobileNumber: mobile,
-                    password,
-                    confirmPassword,
-                    userType: currentUserType,
-                    district, // 🆕 include
-                    taluka,
-                    village,
-                    agreeToTerms
-                })
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                alert('Account created successfully!');
-                window.location.href = '/login';
-            } else {
-                alert(data.message);
-            }
-        } catch (error) {
-            console.error('Error creating account:', error);
-            alert('Failed to create account. Please try again.');
-        }
+    try {
+      const res = await fetch(`/signup/villages/${talukaId}`);
+      const data = await res.json();
+      if (data.success) {
+        villageSelect.innerHTML = "<option value=''>Select Village</option>";
+        data.villages.forEach(v =>
+          villageSelect.appendChild(createOption(v.id, v.name))
+        );
+      }
+    } catch (err) {
+      console.error("Error loading villages:", err);
     }
+  });
 
-    // (OTP & helper functions same as before)
-    function validateMobileNumber(mobile) {
-        return /^[6-9]\d{9}$/.test(mobile);
-    }
+  // Initialize page
+  await loadDistricts();
 
-    function populateVillages(villages) {
-        villageList.innerHTML = '';
-        if (villages.length === 0) {
-            const noResults = document.createElement('div');
-            noResults.className = 'village-item no-results';
-            noResults.textContent = 'No villages found';
-            villageList.appendChild(noResults);
-        } else {
-            villages.forEach(village => {
-                const item = document.createElement('div');
-                item.className = 'village-item';
-                item.textContent = village;
-                item.addEventListener('click', () => selectVillage(village));
-                villageList.appendChild(item);
-            });
-        }
-    }
-
-    function selectVillage(village) {
-        villageSearch.value = village;
-        selectedVillage.value = village;
-        villageDropdown.classList.remove('show');
-    }
-
-    function clearVillageSelection() {
-        villageSearch.value = '';
-        selectedVillage.value = '';
-        villageDropdown.classList.remove('show');
-    }
-
-    const userTypes = {
-        'pet-owner': { showVillage: true },
-        'doctor': { showVillage: true },
-        'district-head': { showVillage: false },
-        'collector': { showVillage: false }
-    };
+});
 </script>
 
 </body>
