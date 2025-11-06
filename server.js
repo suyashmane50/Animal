@@ -58,5 +58,5 @@ app.use('/talukaroute',talukaRouter)
 
 
 server.listen(process.env.PORT || 3000, () => {
-    console.log('Server running at ${PORT}');
+    console.log(`Server running at ${PORT}`);
 });
