@@ -149,9 +149,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const resendOtpBtn = document.getElementById("resendOtp");
   const timerDisplay = document.getElementById("timer");
   const otpDisplay = document.getElementById("otpDisplay");
-  const otpInputs = document.querySelectorAll(".otp-input"); // 👈 Select OTP inputs
+  const otpInputs = document.querySelectorAll(".otp-input");
 
-  // 🔹 Function to send OTP
+  // 🕓 Timer variables
+  let timerInterval;
+
+  // 🔹 Send OTP
   async function sendOtpToServer() {
     const mobileNumber = mobileInput.value.trim();
 
@@ -163,8 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       sendOtpBtn.disabled = true;
       sendOtpBtn.textContent = "Sending...";
-      console.log("Sending OTP to server...");
-
       const response = await fetch("/signup/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -172,14 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await response.json();
-      console.log("OTP send response:", data);
-
       if (data.success) {
         otpContainer.style.display = "block";
         alert("OTP sent successfully!");
         startTimer();
 
-        // 👇 Show OTP on screen (for testing/demo)
+        // 🧪 Show OTP (for demo/testing)
         if (data.otp) {
           otpDisplay.innerHTML = `<strong>Test OTP:</strong> <span style="color:green; font-size:1.2em;">${data.otp}</span>`;
           otpDisplay.style.display = "block";
@@ -196,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🔹 Function to verify OTP
+  // 🔹 Verify OTP
   async function verifyOtpWithServer() {
     const otp = Array.from(otpInputs).map((input) => input.value).join("");
     const mobileNumber = mobileInput.value.trim();
@@ -217,8 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await response.json();
-      console.log("OTP verify response:", data);
-
       if (data.success) {
         otpContainer.style.display = "none";
         verificationSuccess.style.display = "block";
@@ -237,8 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🔹 OTP Timer Logic
-  let timerInterval;
+  // 🔹 Start timer (2 minutes)
   function startTimer() {
     let timeLeft = 120;
     resendOtpBtn.classList.add("disabled");
@@ -259,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   }
 
-  // 🔹 Function to resend OTP
+  // 🔹 Resend OTP
   async function resendOtp() {
     const mobileNumber = mobileInput.value.trim();
     if (!mobileNumber) {
@@ -276,13 +272,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await response.json();
-      console.log("Resend OTP response:", data);
-
       if (data.success) {
         alert("New OTP sent successfully!");
         startTimer();
 
-        // 👇 Show new OTP
         if (data.otp) {
           otpDisplay.innerHTML = `<strong>New OTP:</strong> <span style="color:green; font-size:1.2em;">${data.otp}</span>`;
           otpDisplay.style.display = "block";
@@ -298,14 +291,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🔹 Auto move between OTP inputs + handle paste
+  // 🔹 OTP Input Handling + Paste Option
   otpInputs.forEach((input, index) => {
     input.addEventListener("input", (e) => {
-      const value = e.target.value;
-      if (/[^0-9]/.test(value)) {
-        e.target.value = value.replace(/[^0-9]/g, "");
-        return;
-      }
+      const value = e.target.value.replace(/\D/g, "");
+      e.target.value = value;
       if (value && index < otpInputs.length - 1) {
         otpInputs[index + 1].focus();
       }
@@ -317,7 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // 👇 Allow user to paste full OTP
+    // 👇 Handle OTP paste (paste all 6 digits)
     input.addEventListener("paste", (e) => {
       e.preventDefault();
       const pasteData = e.clipboardData.getData("text").trim();
@@ -336,6 +326,75 @@ document.addEventListener("DOMContentLoaded", () => {
   resendOtpBtn.addEventListener("click", resendOtp);
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const districtSelect = document.getElementById("district");
+  const talukaSelect = document.getElementById("taluka");
+  const villageSelect = document.getElementById("village");
+
+  // 🏙 Load districts
+  try {
+    const res = await fetch("/signup/districts");
+    const data = await res.json();
+    if (data.success) {
+      data.districts.forEach((d) => {
+        const opt = document.createElement("option");
+        opt.value = d.id;
+        opt.textContent = d.name;
+        districtSelect.appendChild(opt);
+      });
+    }
+  } catch (err) {
+    console.error("Failed to load districts:", err);
+  }
+
+  // 🏘 Load talukas when district changes
+  districtSelect.addEventListener("change", async () => {
+    talukaSelect.innerHTML = '<option value="">Select Taluka</option>';
+    villageSelect.innerHTML = '<option value="">Select Village</option>';
+
+    if (!districtSelect.value) return;
+
+    try {
+      const res = await fetch(`/signup/talukas/${districtSelect.value}`);
+      const data = await res.json();
+      if (data.success) {
+        data.talukas.forEach((t) => {
+          const opt = document.createElement("option");
+          opt.value = t.id;
+          opt.textContent = t.name;
+          talukaSelect.appendChild(opt);
+        });
+      }
+    } catch (err) {
+      console.error("Failed to load talukas:", err);
+    }
+  });
+
+  // 🏡 Load villages when taluka changes
+  talukaSelect.addEventListener("change", async () => {
+    villageSelect.innerHTML = '<option value="">Select Village</option>';
+
+    if (!talukaSelect.value) return;
+
+    try {
+      const res = await fetch(`/signup/villages/${talukaSelect.value}`);
+      const data = await res.json();
+      if (data.success) {
+        data.villages.forEach((v) => {
+          const opt = document.createElement("option");
+          opt.value = v.id;
+          opt.textContent = v.name;
+          villageSelect.appendChild(opt);
+        });
+      }
+    } catch (err) {
+      console.error("Failed to load villages:", err);
+    }
+  });
+});
+</script>
+
 
 
 </body>
