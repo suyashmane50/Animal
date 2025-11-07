@@ -70,6 +70,8 @@
                 <input placeholder="Enter Your Mobile Number" type="tel" id="mobileNumber" class="form-control" maxlength="10" required>
                 <button type="button" class="btn btn-verify" id="sendOtpBtn">Send OTP</button>
               </div>
+              <p id="otpDisplay" style="display:none; margin-top:10px; color:green; font-weight:bold;"></p>
+
               <div id="mobileStatus" class="mobile-verification-status">
                 <i class="fas fa-circle status-pending"></i>
                 <span>Mobile number not verified</span>
@@ -135,186 +137,206 @@
   </div>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const sendOtpBtn = document.getElementById("sendOtpBtn");
-    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
-    const resendOtpLink = document.getElementById("resendOtp");
-    const otpContainer = document.getElementById("otpContainer");
-    const mobileInput = document.getElementById("mobileNumber");
-    const mobileStatus = document.getElementById("mobileStatus");
-    const signupForm = document.getElementById("signupFormElement");
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM loaded - initializing signup form");
 
-    let verified = false;
-    let timerInterval;
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+  const otpContainer = document.getElementById("otpContainer");
+  const mobileInput = document.getElementById("mobileNumber");
+  const mobileStatus = document.getElementById("mobileStatus");
+  const verificationSuccess = document.getElementById("verificationSuccess");
+  const resendOtpBtn = document.getElementById("resendOtp");
+  const timerDisplay = document.getElementById("timer");
+  const otpDisplay = document.getElementById("otpDisplay");
+  const otpInputs = document.querySelectorAll(".otp-input"); // 👈 Select OTP inputs
 
-    // ✅ Send OTP
-    sendOtpBtn.addEventListener("click", async () => {
-      const mobile = mobileInput.value.trim();
-      if (mobile.length !== 10) return alert("Enter valid 10-digit mobile number");
+  // 🔹 Function to send OTP
+  async function sendOtpToServer() {
+    const mobileNumber = mobileInput.value.trim();
 
-      const res = await fetch("/signup/send-otp", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobileNumber: mobile }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        otpContainer.style.display = "block";
-        startTimer(120);
-        alert("OTP sent successfully!");
-      } else alert(data.message);
-    });
-
-    // 🔁 Resend OTP
-    resendOtpLink.addEventListener("click", async (e) => {
-      e.preventDefault();
-      const mobile = mobileInput.value.trim();
-      const res = await fetch("/signup/resend-otp", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobileNumber: mobile }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("OTP resent successfully!");
-        startTimer(120);
-      } else alert(data.message);
-    });
-
-    // ✅ Verify OTP
-    verifyOtpBtn.addEventListener("click", async () => {
-      const otp = Array.from(document.querySelectorAll(".otp-input")).map(i => i.value).join("");
-      const mobile = mobileInput.value.trim();
-      const res = await fetch("/signup/verify-otp", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobileNumber: mobile, otp }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        verified = true;
-        document.getElementById("verificationSuccess").style.display = "block";
-        mobileStatus.innerHTML = '<i class="fas fa-check-circle status-verified"></i> <span>Verified</span>';
-      } else alert(data.message);
-    });
-
-    // ⏱ Timer
-    function startTimer(duration) {
-      let time = duration;
-      clearInterval(timerInterval);
-      const timerEl = document.getElementById("timer");
-      timerInterval = setInterval(() => {
-        const min = String(Math.floor(time / 60)).padStart(2, "0");
-        const sec = String(time % 60).padStart(2, "0");
-        timerEl.textContent = `${min}:${sec}`;
-        if (--time < 0) clearInterval(timerInterval);
-      }, 1000);
-    }
-
-    // 🧾 District-Taluka-Village fetch
-    async function loadDistricts() {
-      const res = await fetch("/signup/districts");
-      const data = await res.json();
-      if (data.success) {
-        const districtSelect = document.getElementById("district");
-        districtSelect.innerHTML = "<option value=''>Select District</option>";
-        data.districts.forEach(d => {
-          const opt = document.createElement("option");
-          opt.value = d.id; opt.textContent = d.name;
-          districtSelect.appendChild(opt);
-        });
-      }
-    }
-
-    document.getElementById("district").addEventListener("change", async e => {
-      const res = await fetch(`/signup/talukas/${e.target.value}`);
-      const data = await res.json();
-      const talukaSelect = document.getElementById("taluka");
-      talukaSelect.innerHTML = "<option value=''>Select Taluka</option>";
-      data.talukas.forEach(t => {
-        const opt = document.createElement("option");
-        opt.value = t.id; opt.textContent = t.name;
-        talukaSelect.appendChild(opt);
-      });
-    });
-
-    document.getElementById("taluka").addEventListener("change", async e => {
-      const res = await fetch(`/signup/villages/${e.target.value}`);
-      const data = await res.json();
-      const villageSelect = document.getElementById("village");
-      villageSelect.innerHTML = "<option value=''>Select Village</option>";
-      data.villages.forEach(v => {
-        const opt = document.createElement("option");
-        opt.value = v.id; opt.textContent = v.name;
-        villageSelect.appendChild(opt);
-      });
-    });
-
-    // 🧾 Form submit
-    signupForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!verified) return alert("Please verify your mobile number first!");
-
-      const payload = {
-        fullName: document.getElementById("signupUsername").value,
-        mobileNumber: mobileInput.value,
-        password: document.getElementById("signupPassword").value,
-        confirmPassword: document.getElementById("confirmPassword").value,
-        taluka: document.getElementById("taluka").selectedOptions[0].text,
-        village: document.getElementById("village").selectedOptions[0].text,
-        userType: "patient",
-        agreeToTerms: document.getElementById("agreeTerms").checked,
-      };
-
-      const res = await fetch("/signup/create", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert(`Signup successful! Your user code: ${data.userCode}`);
-        window.location.href = "/login";
-      } else alert(data.message);
-    });
-
-    loadDistricts();
-  });
-  // 🔢 OTP Input Auto-Move Logic
-const otpInputs = document.querySelectorAll(".otp-input");
-
-otpInputs.forEach((input, index) => {
-  input.addEventListener("input", (e) => {
-    const value = e.target.value;
-    // Only allow digits
-    if (!/^[0-9]$/.test(value)) {
-      e.target.value = "";
+    if (!/^[6-9]\d{9}$/.test(mobileNumber)) {
+      alert("Please enter a valid 10-digit mobile number");
       return;
     }
 
-    // Move to next input if one digit is entered
-    if (value && index < otpInputs.length - 1) {
-      otpInputs[index + 1].focus();
-    }
-  });
+    try {
+      sendOtpBtn.disabled = true;
+      sendOtpBtn.textContent = "Sending...";
+      console.log("Sending OTP to server...");
 
-  input.addEventListener("keydown", (e) => {
-    // Handle backspace → move to previous box if empty
-    if (e.key === "Backspace" && !e.target.value && index > 0) {
-      otpInputs[index - 1].focus();
-    }
-  });
+      const response = await fetch("/signup/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobileNumber }),
+      });
 
-  // Allow paste (e.g., if user copies the OTP)
-  input.addEventListener("paste", (e) => {
-    e.preventDefault();
-    const pasteData = e.clipboardData.getData("text").slice(0, otpInputs.length);
-    otpInputs.forEach((inp, i) => {
-      inp.value = pasteData[i] || "";
+      const data = await response.json();
+      console.log("OTP send response:", data);
+
+      if (data.success) {
+        otpContainer.style.display = "block";
+        alert("OTP sent successfully!");
+        startTimer();
+
+        // 👇 Show OTP on screen (for testing/demo)
+        if (data.otp) {
+          otpDisplay.innerHTML = `<strong>Test OTP:</strong> <span style="color:green; font-size:1.2em;">${data.otp}</span>`;
+          otpDisplay.style.display = "block";
+        }
+      } else {
+        alert(data.message || "Failed to send OTP");
+      }
+    } catch (err) {
+      console.error("Error sending OTP:", err);
+      alert("Something went wrong while sending OTP");
+    } finally {
+      sendOtpBtn.disabled = false;
+      sendOtpBtn.textContent = "Send OTP";
+    }
+  }
+
+  // 🔹 Function to verify OTP
+  async function verifyOtpWithServer() {
+    const otp = Array.from(otpInputs).map((input) => input.value).join("");
+    const mobileNumber = mobileInput.value.trim();
+
+    if (otp.length !== 6) {
+      alert("Please enter the complete 6-digit OTP");
+      return;
+    }
+
+    try {
+      verifyOtpBtn.disabled = true;
+      verifyOtpBtn.textContent = "Verifying...";
+
+      const response = await fetch("/signup/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobileNumber, otp }),
+      });
+
+      const data = await response.json();
+      console.log("OTP verify response:", data);
+
+      if (data.success) {
+        otpContainer.style.display = "none";
+        verificationSuccess.style.display = "block";
+        mobileStatus.innerHTML = `<i class="fas fa-check-circle text-success"></i> <span>Mobile number verified</span>`;
+        alert("Mobile number verified successfully!");
+        otpDisplay.style.display = "none";
+      } else {
+        alert(data.message || "Invalid OTP");
+      }
+    } catch (err) {
+      console.error("Error verifying OTP:", err);
+      alert("Something went wrong while verifying OTP");
+    } finally {
+      verifyOtpBtn.disabled = false;
+      verifyOtpBtn.textContent = "Verify OTP";
+    }
+  }
+
+  // 🔹 OTP Timer Logic
+  let timerInterval;
+  function startTimer() {
+    let timeLeft = 120;
+    resendOtpBtn.classList.add("disabled");
+    resendOtpBtn.style.pointerEvents = "none";
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+      const seconds = String(timeLeft % 60).padStart(2, "0");
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+
+      if (timeLeft-- <= 0) {
+        clearInterval(timerInterval);
+        timerDisplay.textContent = "00:00";
+        resendOtpBtn.classList.remove("disabled");
+        resendOtpBtn.style.pointerEvents = "auto";
+      }
+    }, 1000);
+  }
+
+  // 🔹 Function to resend OTP
+  async function resendOtp() {
+    const mobileNumber = mobileInput.value.trim();
+    if (!mobileNumber) {
+      alert("Enter mobile number first");
+      return;
+    }
+
+    try {
+      resendOtpBtn.disabled = true;
+      const response = await fetch("/signup/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobileNumber }),
+      });
+
+      const data = await response.json();
+      console.log("Resend OTP response:", data);
+
+      if (data.success) {
+        alert("New OTP sent successfully!");
+        startTimer();
+
+        // 👇 Show new OTP
+        if (data.otp) {
+          otpDisplay.innerHTML = `<strong>New OTP:</strong> <span style="color:green; font-size:1.2em;">${data.otp}</span>`;
+          otpDisplay.style.display = "block";
+        }
+      } else {
+        alert(data.message || "Failed to resend OTP");
+      }
+    } catch (err) {
+      console.error("Error resending OTP:", err);
+      alert("Something went wrong while resending OTP");
+    } finally {
+      resendOtpBtn.disabled = false;
+    }
+  }
+
+  // 🔹 Auto move between OTP inputs + handle paste
+  otpInputs.forEach((input, index) => {
+    input.addEventListener("input", (e) => {
+      const value = e.target.value;
+      if (/[^0-9]/.test(value)) {
+        e.target.value = value.replace(/[^0-9]/g, "");
+        return;
+      }
+      if (value && index < otpInputs.length - 1) {
+        otpInputs[index + 1].focus();
+      }
     });
-    // Move to last filled input
-    const nextEmpty = Array.from(otpInputs).findIndex(i => i.value === "");
-    if (nextEmpty !== -1) otpInputs[nextEmpty].focus();
-    else otpInputs[otpInputs.length - 1].focus();
-  });
-});
 
-  </script>
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0) {
+        otpInputs[index - 1].focus();
+      }
+    });
+
+    // 👇 Allow user to paste full OTP
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const pasteData = e.clipboardData.getData("text").trim();
+      if (/^\d{6}$/.test(pasteData)) {
+        otpInputs.forEach((inp, i) => {
+          inp.value = pasteData[i] || "";
+        });
+        otpInputs[otpInputs.length - 1].focus();
+      }
+    });
+  });
+
+  // 🔹 Event Listeners
+  sendOtpBtn.addEventListener("click", sendOtpToServer);
+  verifyOtpBtn.addEventListener("click", verifyOtpWithServer);
+  resendOtpBtn.addEventListener("click", resendOtp);
+});
+</script>
+
+
 </body>
 </html>
