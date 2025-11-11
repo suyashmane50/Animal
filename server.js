@@ -9,6 +9,7 @@ import compression from 'compression';;
 import dotenv from "dotenv";
 
 
+
 import petOwnerRoute from './routes/petOwnerRoute.js';
 import loginrouter from './routes/loginRoute.js';
 import signuprouter from './routes/signupRoute.js';
@@ -18,7 +19,10 @@ import { initializeDatabase } from './models/signup.js';
 import petRoute from './routes/petsRoute.js';
 import { initializePetTable } from "./models/pets.js";
 import talukaRouter from "./routes/talukaRouter.js"
-import {initializeRegionTables} from  "./models/talukas.js"
+import {initializeRegionTables} from  "./models/talukas.js";
+import doctorrouter from './routes/doctorRoute.js';
+import districtHeadRouter from './routes/district_headRoute.js';
+import { initializeDoctorTables } from './models/doctor.js';
 
 dotenv.config();
 const app = express();
@@ -27,6 +31,7 @@ const server = http.createServer(app);
 initializeDatabase();
 initializePetTable();
 initializeRegionTables();
+initializeDoctorTables();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -55,7 +60,9 @@ app.use('/signup', signuprouter);
 app.use('/pet-owner', petOwnerRoute);
 app.use('/logout', logoutRoute);
 app.use('/api/pets', petRoute);
-app.use('/talukaroute',talukaRouter)
+app.use('/talukaroute',talukaRouter);
+app.use('/doctor',doctorrouter);
+app.use('/district-head',districtHeadRouter);
 
 
 const PORT = process.env.PORT || 3000;

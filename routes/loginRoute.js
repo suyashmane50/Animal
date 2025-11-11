@@ -1,71 +1,67 @@
 import express from 'express';
 import db from '../models/sql_connection.js';
-import path from 'path';
 import bcrypt from 'bcrypt';
+import path from 'path';
 import { __dirname } from '../utils/path.js';
 
 const loginrouter = express.Router();
 
-// ✅ Serve login page
+// Serve login page
 loginrouter.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'login.html'));
+  res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// ✅ Handle login
 loginrouter.post('/', async (req, res) => {
-    try {
-        const { mobileNo, password, userType } = req.body;
+  try {
+    const { mobileNo, password, userType } = req.body;
+    console.log("🟢 Login Request:", { mobileNo, userType });
 
-        if (!mobileNo || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Please enter both mobile number and password'
-            });
-        }
-
-        // ✅ Check user existence
-        const [rows] = await db.query('SELECT * FROM users WHERE mobile_number = ?', [mobileNo]);
-        if (rows.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid mobile number or password'
-            });
-        }
-
-        const user = rows[0];
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid mobile number or password'
-            });
-        }
-
-        // ✅ Save session details (🔴 this part is very important)
-        req.session.userId = user.id; // 👈 used later to verify login
-        req.session.user = {
-            id: user.id,
-            name: user.full_name,
-            mobileNo: user.mobile_number,
-            userType: user.user_type
-        };
-
-        console.log(`✅ User logged in: ${user.full_name} (ID: ${user.id})`);
-
-        // ✅ Send success response
-        res.status(200).json({
-            success: true,
-            message: 'Login successful',
-            userType: user.user_type
-        });
-
-    } catch (err) {
-        console.error('❌ Login error:', err);
-        res.status(500).json({
-            success: false,
-            message: 'Server error'
-        });
+    if (!mobileNo || !password || !userType) {
+      return res.status(400).json({ success: false, message: 'Missing credentials' });
     }
+
+    const userTables = {
+      'pet-owner': {
+        table: 'users',
+        mobileField: 'mobile_number',
+        passwordField: 'password',
+        nameField: 'full_name'
+      },
+      'doctor': {
+        table: 'doctors',
+        mobileField: 'mobile_number',
+        passwordField: 'password',
+        nameField: 'full_name'
+      }
+    };
+
+    const tableInfo = userTables[userType];
+    if (!tableInfo) return res.status(400).json({ success: false, message: 'Invalid user type' });
+
+    const { table, mobileField, passwordField, nameField } = tableInfo;
+
+    const [rows] = await db.query(`SELECT * FROM ${table} WHERE ${mobileField} = ?`, [mobileNo]);
+    if (rows.length === 0) return res.status(400).json({ success: false, message: 'User not found' });
+
+    const user = rows[0];
+    const passwordValid = user[passwordField]?.startsWith('$2b$')
+      ? await bcrypt.compare(password, user[passwordField])
+      : password === user[passwordField];
+
+    if (!passwordValid) return res.status(400).json({ success: false, message: 'Incorrect password' });
+
+    // ✅ Store session properly
+    req.session.userId = user.id;
+    req.session.userType = userType;
+    req.session.userName = user[nameField];
+    console.log(`✅ ${userType} logged in: ${user[nameField]}`);
+
+    res.json({ success: true, userType });
+
+  } catch (err) {
+    console.error('❌ Login error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 });
 
 export default loginrouter;

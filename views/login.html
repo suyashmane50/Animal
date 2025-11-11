@@ -197,53 +197,59 @@
         }
     }
     async function loginUser(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const mobileNumber = document.getElementById("mobileNumber").value.trim();
-    const password = document.getElementById("password").value.trim();
+  const mobileNumber = document.getElementById("mobileNumber").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const userType = currentUserType;
 
-    try {
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                mobileNo: mobileNumber,
-                password: password
-            })
-        });
+  if (!mobileNumber || !password || !userType) {
+    alert("Please enter all fields (mobile number, password, and user type)");
+    return;
+  }
 
-        const data = await response.json();
-        console.log('Server response:', data);
+  try {
+    console.log("📤 Sending login request:", { mobileNo: mobileNumber, password, userType });
 
-        if (response.ok && data.success) {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mobileNo: mobileNumber,
+        password: password,
+        userType: userType
+      })
+    });
 
-            // ✅ Redirect based on user type
-            switch (data.userType) {
-                case 'patient':
-                    window.location.href = '/pet-owner';
-                    break;
-                case 'doctor':
-                    window.location.href = '/views/doctor_dashboard.html';
-                    break;
-                case 'admin':
-                    window.location.href = '/views/admin_dashboard.html';
-                    break;
-                case 'staff':
-                    window.location.href = '/views/staff_dashboard.html';
-                    break;
-                default:
-                    alert('Unknown user type: ' + data.userType);
-            }
-        } else {
-            alert(data.message || 'Invalid credentials');
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        alert('Something went wrong. Please try again later.');
+    console.log("📥 Raw response object:", response);
+
+    const data = await response.json();
+    console.log('✅ Server response:', data);
+
+    if (response.ok && data.success) {
+      console.log("🚀 Redirecting to dashboard for:", data.userType);
+
+      if (data.userType === 'pet-owner') {
+        window.location.replace('/pet-owner'); // ✅ Use replace instead of href
+      } else if (data.userType === 'doctor') {
+        window.location.replace('/doctor');
+      } else if (data.userType === 'district-head') {
+        window.location.replace('/district-head');
+      } else {
+        alert('Login successful, but dashboard not found for this role');
+      }
+    } else {
+      console.warn("⚠️ Login failed:", data.message);
+      alert(data.message || 'Invalid credentials');
     }
+
+  } catch (error) {
+    console.error('❌ Login error:', error);
+    alert('Something went wrong. Please try again later.');
+  }
 }
+
+
 
 
 </script>
