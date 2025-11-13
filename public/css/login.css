@@ -407,3 +407,151 @@
                 font-size: 0.8rem;
             }
         }
+        /* Hide the footer and signup by default (will be shown conditionally) */
+.form-footer,
+.btn-signup,
+.divider {
+  display: none;
+}
+
+/* When enabled via JS */
+.show-links .form-footer,
+.show-links .btn-signup,
+.show-links .divider {
+  display: block;
+}
+/* 🧩 Reduce overall page height and center nicely */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+  color: #333;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 🧩 Adjust card dimensions to fit screen better */
+.login-card {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+  max-width: 950px;  /* reduced from 1200px */
+  height: 85vh;      /* reduced from auto */
+  display: flex;
+  flex-direction: row;
+}
+
+/* 🧩 Left section smaller and cleaner */
+.login-left {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.welcome-title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.welcome-text {
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+/* 🧩 Right section balanced vertically */
+.login-right {
+  flex: 1;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.login-header {
+  margin-bottom: 20px;
+}
+
+.login-title {
+  font-size: 1.8rem;
+}
+
+.login-subtitle {
+  font-size: 0.9rem;
+}
+
+/* 🧩 Compact form and buttons */
+.form-container {
+  margin-top: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.btn-login,
+.btn-signup {
+  padding: 10px 15px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+}
+
+.divider {
+  margin: 18px 0;
+}
+
+/* 🧩 Compact user-type selector */
+.user-type-selector {
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.user-type-btn {
+  width: 95px;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.user-type-btn i {
+  font-size: 1.3rem;
+}
+
+.user-type-name {
+  font-size: 0.8rem;
+}
+
+/* 🧩 Bottom links always visible and small */
+.form-footer {
+  margin-top: 15px;
+  font-size: 0.85rem;
+}
+
+/* 🧩 Responsive tweak for smaller laptops */
+@media (max-height: 800px) {
+  .login-card {
+    height: 90vh;
+  }
+  .welcome-title {
+    font-size: 1.7rem;
+  }
+}
+/* Hide the links by default */
+.form-footer,
+.btn-signup,
+.divider {
+  display: none;
+}
+
+/* Show them when Pet Owner is selected */
+.show-links .form-footer,
+.show-links .btn-signup,
+.show-links .divider {
+  display: block;
+}

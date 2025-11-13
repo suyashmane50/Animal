@@ -22,6 +22,7 @@ import doctorrouter from "./routes/doctorRoute.js";
 import districtHeadRouter from "./routes/district_headRoute.js";
 import { initializeDoctorTables } from "./models/doctor.js";
 import collectorrouter from "./routes/collectorRoute.js";
+import resetPasswordRouter from "./routes/forgotRoute.js";
 
 dotenv.config();
 const app = express();
@@ -72,6 +73,8 @@ app.use("/talukaroute", talukaRouter);
 app.use("/doctor", doctorrouter);
 app.use("/district-head", districtHeadRouter);
 app.use("/collector", collectorrouter);
+app.use("/reset-password", resetPasswordRouter);
+
 
 // ✅ Start the server
 const PORT = process.env.PORT || 3000;

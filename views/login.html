@@ -98,7 +98,7 @@
                             <a type="button" class="btn btn-signup" id="showSignupBtn" href="/signup">Create New Account</a>
                             
                             <div class="form-footer">
-                                <a href="#">Forgot your password?</a>
+                                <a href="/reset-password">Forgot your password?</a>
                             </div>
                         </form>
                     </div>
@@ -165,21 +165,40 @@
     }
 
     // User type selection
-    if (userTypeBtns.length > 0) {
-        userTypeBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Remove active class from all buttons
-                userTypeBtns.forEach(b => b.classList.remove('active'));
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Update current user type
-                currentUserType = this.getAttribute('data-user-type');
-                console.log('Selected user type:', currentUserType);
-            });
-        });
-    }
+    // User type selection logic
+const formContainer = document.querySelector('.form-container');
+
+// Function to toggle visibility of signup & forgot links
+function toggleLinksForUserType(type) {
+  if (type === 'pet-owner') {
+    formContainer.classList.add('show-links');
+  } else {
+    formContainer.classList.remove('show-links');
+  }
+}
+
+// Apply to all user type buttons
+if (userTypeBtns.length > 0) {
+  userTypeBtns.forEach(btn => {
+    btn.addEventListener('click', function () {
+      userTypeBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      currentUserType = this.getAttribute('data-user-type');
+      toggleLinksForUserType(currentUserType);
+    });
+  });
+}
+
+// ✅ Apply default visibility when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+  const activeBtn = document.querySelector('.user-type-btn.active');
+  if (activeBtn) {
+    currentUserType = activeBtn.getAttribute('data-user-type');
+    toggleLinksForUserType(currentUserType);
+  }
+});
+
 
     // Functions
     function togglePasswordVisibility(passwordFieldId, toggleButton) {
