@@ -32,7 +32,19 @@ loginrouter.post('/', async (req, res) => {
         mobileField: 'mobile_number',
         passwordField: 'password',
         nameField: 'full_name'
-      }
+      },
+      'district-head': {
+        table: 'users',
+        mobileField: 'mobile_number',
+        passwordField: 'password',
+        nameField: 'full_name'
+      },
+      'collector': {
+        table: 'users',
+        mobileField: 'mobile_number',
+        passwordField: 'password',
+        nameField: 'full_name'
+      },
     };
 
     const tableInfo = userTables[userType];

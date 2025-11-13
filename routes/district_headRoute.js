@@ -145,6 +145,25 @@ router.get('/villages/:talukaId', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching villages' });
   }
 });
+// ✅ Dashboard stats route
+router.get('/dashboard-stats', async (req, res) => {
+  try {
+    const [[{ total_doctors }]] = await db.query('SELECT COUNT(*) AS total_doctors FROM doctors');
+    const [[{ total_villages }]] = await db.query('SELECT COUNT(*) AS total_villages FROM villages');
+    const [[{ total_talukas }]] = await db.query('SELECT COUNT(*) AS total_talukas FROM talukas');
+
+    res.json({
+      success: true,
+      total_doctors,
+      villages_covered: total_villages,
+      monthly_vaccinations: Math.floor(Math.random() * 1000),
+      coverage_rate: `${Math.floor(Math.random() * 100)}%`
+    });
+  } catch (err) {
+    console.error('❌ Error fetching dashboard stats:', err.message);
+    res.status(500).json({ success: false, message: 'Error fetching dashboard stats' });
+  }
+});
 
 
 export default router;
